@@ -36,13 +36,13 @@ namespace TestProgram
 
         private static void luckyNumbers(String ticketNumbers)
         {
-            //Using collection to simplify the checking proccess
+            //Using collections to simplify the validation process
             var tempNum = ticketNumbers.Select(digit => int.Parse(digit.ToString()));
 
             int check = 0;
             for (int i = 0; i < tempNum.Count() / 2; i++)
             {
-                //if the halfs of ticket numbers are equal, then the subdivition of them will be zero
+                //if half of the ticket numbers are equal, then their subtraction will be equal to zero
                 check = check + tempNum.ElementAt(i) - tempNum.ElementAt(i + (tempNum.Count() / 2));
             }
             if (check == 0)
@@ -59,7 +59,7 @@ namespace TestProgram
 
         private static bool checkNumbers(String ticketNumbers)
         {
-            //Using ASCII for checking numbers
+            //Using ASCII to validate numbers
             foreach (var tempChar in ticketNumbers)
             {
                 int ascii = (int)tempChar;

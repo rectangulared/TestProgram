@@ -43,7 +43,7 @@ namespace TestProgram
             for (int i = 0; i < tempNum.Count() / 2; i++)
             {
                 //if the halfs of ticket numbers are equal, then the subdivition of them will be zero
-                check += check + tempNum.ElementAt(i) - tempNum.ElementAt(i + (tempNum.Count() / 2 - 1));
+                check = check + tempNum.ElementAt(i) - tempNum.ElementAt(i + (tempNum.Count() / 2));
             }
             if (check == 0)
             {

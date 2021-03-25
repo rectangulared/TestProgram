@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace TestProgram
 {
@@ -7,45 +8,24 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
+            Checker checker = new Checker();
+            InputHandler inputHandler = new InputHandler();
+            PrintHandler printHandler = new PrintHandler();
+
             while (true)
             {
-                printIntro();
+                printHandler.PrintIntro();
+                string ticketNumbers = inputHandler.GetInput();
+                if (checker.IsUserInputCorrect(ticketNumbers))
+                    LuckyNumbers(ticketNumbers);
 
-                string ticketNumbers = String.Empty;
-                ticketNumbers = userInputCheck(ticketNumbers);
-
-                //Checking if zero is needed
-                ticketNumbers = checkForZero(ticketNumbers);
-
-                luckyNumbers(ticketNumbers);
             }
         }
 
-        private static void printIntro()
+        static void LuckyNumbers(string ticketNumbers)
         {
-            Console.Clear();
-            Console.WriteLine("Greetings! \nPlease, enter numbers from your lucky ticket and hope Lady Luck is on your side");
-            Console.WriteLine("Tickets are 4 to 8 numbers long and do not contain any other symbols or letters.");
-        }
+            PrintHandler printHandler = new PrintHandler();
 
-        private static String userInputCheck(String ticketNumbers)
-        {
-            do
-            {
-                ticketNumbers = Console.ReadLine();
-                //Removing all whitespaces from user input
-                ticketNumbers = ticketNumbers.Replace(" ", "");
-                Console.WriteLine(ticketNumbers);
-                Console.Clear();
-
-                //Check if all numbers are actually numbers and if 4<=Length<=8
-            } while (!checkLength(ticketNumbers) || !checkNumbers(ticketNumbers));
-
-            return ticketNumbers;
-        }
-
-        private static void luckyNumbers(String ticketNumbers)
-        {
             //Using collections to simplify the validation process
             var tempNum = ticketNumbers.Select(digit => int.Parse(digit.ToString()));
 
@@ -57,49 +37,91 @@ namespace TestProgram
             }
             if (check == 0)
             {
-                Console.WriteLine("Wow, you win, congratulations.\nDo you want to test your luck again?\nPress any key");
-                Console.ReadKey();
+                printHandler.PrintWin();
             }
             else
             {
-                Console.WriteLine("Hmm, not so lucky, I guess.\nDo you want to try again?\nPress any key");
-                Console.ReadKey();
+                printHandler.PrintLose();
             }
         }
 
-        private static bool checkNumbers(String ticketNumbers)
+    }
+
+    class Checker
+    {
+        PrintHandler printHandler = new PrintHandler();
+
+        public bool IsUserInputCorrect(string ticketNumbers)
         {
-            //Using ASCII to validate numbers
-            foreach (var tempChar in ticketNumbers)
-            {
-                int ascii = (int)tempChar;
-                if (!((ascii >= 48 && ascii <= 57) || ascii == 44 || ascii == 46))
-                {
-                    Console.WriteLine("Sorry, but our tickets only have numbers, try again please");
-                    return false;
-                }
-            }
-            return true;
+            return (IsAllNumbers(ticketNumbers) && IsCorrectLength(ticketNumbers));
         }
 
-        private static bool checkLength(String ticketNumbers)
+        private bool IsCorrectLength(string ticketNumbers)
         {
             if (ticketNumbers.Length < 4 || ticketNumbers.Length > 8)
             {
-                Console.WriteLine("Oops... Your ticket contains wrong amount of numbers, try again");
+                printHandler.PrintLengthError();
                 return false;
             }
             return true;
         }
 
-        private static String checkForZero(String ticketNumbers)
+        private bool IsAllNumbers(string ticketNumbers)
+        {
+            if (Regex.IsMatch(ticketNumbers, "^[0-9]*$"))
+                return true;
+            printHandler.PrintInputError();
+            return false;
+        }
+    }
+
+    class InputHandler
+    {
+        //Getting input, removing whitespaces and adding zero, if needed
+        public string GetInput()
+        {
+            return IsZeroNeeded(Console.ReadLine().Replace(" ", ""));
+        }
+
+        private string IsZeroNeeded(string ticketNumbers)
         {
             if (ticketNumbers.Length % 2 != 0)
-            {
                 ticketNumbers = "0" + ticketNumbers;
-
-            }
             return ticketNumbers;
+        }
+    }
+
+    class PrintHandler
+    {
+        public void PrintIntro()
+        {
+            Console.Clear();
+            Console.WriteLine("Greetings! \nPlease, enter numbers from your lucky ticket and hope Lady Luck is on your side");
+            Console.WriteLine("Tickets are 4 to 8 numbers long and do not contain any other symbols or letters.");
+        }
+
+        public void PrintWin()
+        {
+            Console.WriteLine("Wow, you win, congratulations.\nDo you want to test your luck again?\nPress any key");
+            Console.ReadKey();
+        }
+
+        public void PrintLose()
+        {
+            Console.WriteLine("Hmm, not so lucky, I guess.\nDo you want to try again?\nPress any key");
+            Console.ReadKey();
+        }
+
+        public void PrintLengthError()
+        {
+            Console.WriteLine("Oops... Your ticket contains wrong amount of numbers, try again\nPress any key");
+            Console.ReadKey();
+        }
+
+        public void PrintInputError()
+        {
+            Console.WriteLine("Sorry, but our tickets only have numbers, try again please\nPress any key");
+            Console.ReadKey();
         }
     }
 }

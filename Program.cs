@@ -9,8 +9,7 @@ namespace TestProgram
         {
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine("Greetings! \nPlease, enter numbers from your lucky ticket and hope Lady Luck is on your side");
+                printIntro();
 
                 string ticketNumbers = String.Empty;
                 ticketNumbers = userInputCheck(ticketNumbers);
@@ -22,12 +21,23 @@ namespace TestProgram
             }
         }
 
+        private static void printIntro()
+        {
+            Console.Clear();
+            Console.WriteLine("Greetings! \nPlease, enter numbers from your lucky ticket and hope Lady Luck is on your side");
+            Console.WriteLine("Tickets are 4 to 8 numbers long and do not contain any other symbols or letters.");
+        }
+
         private static String userInputCheck(String ticketNumbers)
         {
             do
             {
                 ticketNumbers = Console.ReadLine();
+                //Removing all whitespaces from user input
+                ticketNumbers = ticketNumbers.Replace(" ", "");
+                Console.WriteLine(ticketNumbers);
                 Console.Clear();
+
                 //Check if all numbers are actually numbers and if 4<=Length<=8
             } while (!checkLength(ticketNumbers) || !checkNumbers(ticketNumbers));
 
